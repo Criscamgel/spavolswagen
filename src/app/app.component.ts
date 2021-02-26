@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ScanparamsService } from './service/scan-params.service';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,10 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'tucarroform';
+
+  constructor(public scanParams: ScanparamsService){
+    scanParams.getParams();
+
+  }
+
 }

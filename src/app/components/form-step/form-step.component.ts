@@ -13,7 +13,9 @@ import es from '@angular/common/locales/es';
 })
 export class FormStepComponent{
 
-  constructor(private centrales: CentralesService) { }
+  constructor(public centrales: CentralesService) {
+    centrales.contacto.DatosBasicos.TipoDocumento = 1;
+   }
 
   ngOnInit() {
     registerLocaleData( es );
@@ -42,33 +44,6 @@ export class FormStepComponent{
   min = this.env.min;
   minF = this.env.minF;
 
-  contacto:ContactoInterface = {
-    DatosBasicos: {
-      TipoDocumento: null,  
-      NumeroDocumento: null,  
-      Nombre1: null,  
-      Celular: null,  
-      CorreoPersonal: null
-    },
-  
-    DatosFinancieros: {  
-      ActividadEconomica: null,  
-      ActividadIndependiente: 3,  
-      IngresoMensual: null  
-    },
-  
-    OtrosDatos: {  
-      AutorizaConsultaCentrales: false,  
-      AutorizaMareigua: false,  
-      ValorFinanciar: null,
-      IdentificacionVendedor: null  
-    },
-
-    DatosVehiculo: {
-      Marca: 22
-    }
-  }
-
   /* Functions */
 
   patternCoincide(event, value) {
@@ -80,30 +55,30 @@ export class FormStepComponent{
   }
 
   chechedc(this){
-    this.contacto.OtrosDatos.AutorizaMareigua = true;
+    this.centrales.contacto.OtrosDatos.AutorizaMareigua = true;
   }
 
   sendCentrales(this){
     this.editable = false;
     
-    if(this.contacto.DatosFinancieros.ActividadEconomica){
-      if(this.contacto.DatosFinancieros.ActividadEconomica === 1){
-          this.contacto.DatosFinancieros.ActividadEconomica = 1;
-          this.contacto.DatosFinancieros.ActividadIndependiente = 15;
+    if(this.centrales.contacto.DatosFinancieros.ActividadEconomica){
+      if(this.centrales.contacto.DatosFinancieros.ActividadEconomica === 1){
+          this.centrales.contacto.DatosFinancieros.ActividadEconomica = 1;
+          this.centrales.contacto.DatosFinancieros.ActividadIndependiente = 15;
       }
-      if(this.contacto.DatosFinancieros.ActividadEconomica === 11){
-          this.contacto.DatosFinancieros.ActividadEconomica = 1;
-          this.contacto.DatosFinancieros.ActividadIndependiente = 16;
+      if(this.centrales.contacto.DatosFinancieros.ActividadEconomica === 11){
+          this.centrales.contacto.DatosFinancieros.ActividadEconomica = 1;
+          this.centrales.contacto.DatosFinancieros.ActividadIndependiente = 16;
       }
-      if(this.contacto.DatosFinancieros.ActividadEconomica === 2){
-          this.contacto.DatosFinancieros.ActividadEconomica = 2;
-          this.contacto.DatosFinancieros.ActividadIndependiente = 3;
+      if(this.centrales.contacto.DatosFinancieros.ActividadEconomica === 2){
+          this.centrales.contacto.DatosFinancieros.ActividadEconomica = 2;
+          this.centrales.contacto.DatosFinancieros.ActividadIndependiente = 3;
       }
     }
 
-    this.centrales.authenticate(this.contacto);
+    this.centrales.authenticate();
     setTimeout(() => {
-      this.centrales.response(this.contacto).subscribe((resp:any) => {
+      this.centrales.response(this.centrales.contacto).subscribe((resp:any) => {
         this.respuesta = resp.IdResultado;
         
         if(this.respuesta == 2 || this.respuesta == 3){
@@ -123,8 +98,8 @@ export class FormStepComponent{
 
    checkTyc(this){
     this.modal=false; 
-    this.contacto.OtrosDatos.AutorizaConsultaCentrales=true;
-    this.contacto.OtrosDatos.AutorizaMareigua=true;
+    this.centrales.contacto.OtrosDatos.AutorizaConsultaCentrales=true;
+    this.centrales.contacto.OtrosDatos.AutorizaMareigua=true;
    }
 
    reload()
@@ -143,7 +118,7 @@ changeButtonCliente(val) {
 
   const nmv = Math.pow((1 + this.tasa), (1 / 12)) - 1;
   this.seguroCuota = (1200 / 1000000) * this.valorFinanciarCop;
-  this.contacto.OtrosDatos.ValorFinanciar = this.valorFinanciarCop; 
+  this.centrales.contacto.OtrosDatos.ValorFinanciar = this.valorFinanciarCop; 
   let cuota;
   if (val !== undefined) {
 
@@ -169,42 +144,4 @@ changeButtonCliente(val) {
   this.seguroCuota = seguroCta;
   seguroCta = Math.round(seguroCta);
   }
-}
-
-export interface DatosBasicos {
-  
-  Nombre1?: String; 
-  TipoDocumento?: String;  
-  NumeroDocumento?: String;  
-  Celular?: String;  
-  CorreoPersonal?: String;
-}
-
-export interface DatosFinancieros {
-  
-  ActividadEconomica?: Number;  
-  ActividadIndependiente?: Number;  
-  IngresoMensual?: Number;
-  
-}
-
-export interface OtrosDatos {
-  
-  AutorizaConsultaCentrales?: Boolean;  
-  AutorizaMareigua?: Boolean;  
-  ValorFinanciar?: Number;
-  IdentificacionVendedor?: Number;
-}
-
-export interface DatosVehiculo {
-  
-  Marca: number;
-}
-
-export interface ContactoInterface{
-
-  DatosBasicos?:DatosBasicos;
-  DatosFinancieros?:DatosFinancieros;
-  OtrosDatos?:OtrosDatos;
-  DatosVehiculo:DatosVehiculo;
 }
